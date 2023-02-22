@@ -27,12 +27,8 @@ class BatchConfiguration {
         val resource = flatfile.resource(ClassPathResource("sample-data.csv"))
         val name = resource.name("personItemReader")
         val delimit = name.delimited()
-        val names = delimit.names(*arrayOf("firstName", "lastName")).linesToSkip(1)
-        val fieldsetmapper = names.fieldSetMapper(object : BeanWrapperFieldSetMapper<Person>() {
-            init {
-                setTargetType(Person::class.java)
-            }
-        })
+        val names = delimit.names("firstName", "lastName")
+        val fieldsetmapper = names.fieldSetMapper({Person(it.readRawString("firstName"), it.readRawString("lastName"))})
         val build = fieldsetmapper.build()
         return build
     }
